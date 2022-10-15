@@ -9,10 +9,7 @@ class ArticleController extends Controller
 {
     public function index()
     {
-        $articles = Article::paginate();
-
-        // Статьи передаются в шаблон
-        // compact('articles') => [ 'articles' => $articles ]
+        $articles = Article::paginate(15);
         return view('article.index', compact('articles'));
     }
 
@@ -70,5 +67,15 @@ class ArticleController extends Controller
         $article->save();
         return redirect()
             ->route('articles.index');
+    }
+
+    public function destroy($id)
+    {
+        // DELETE — идемпотентный метод, поэтому результат операции всегда один и тот же
+        $article = Article::find($id);
+        if ($article) {
+            $article->delete();
+        }
+        return redirect()->route('articles.index');
     }
 }
